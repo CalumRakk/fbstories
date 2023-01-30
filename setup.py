@@ -19,7 +19,7 @@ setup(
         )
     ],
     entry_points={
-        "console_scripts": ["fbstories=fbstories.cli"],
+        "console_scripts": ["fbstories=fbstories.cli:run_script"],
     },
     packages=['fbstories'],
 )

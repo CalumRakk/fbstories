@@ -87,7 +87,8 @@ def load_cookies(cookies_path: str):
             return cookies
         raise Exception(
             "Alguno o todos de los `name` de cookies no está presente en las cookies proporcionadas.")
-    raise Exception("No existe archivo que contiene las cookies")
+    print("No existe archivo que contiene las cookies")
+    exit()
 
 
 def parse_netscape_cookies(file) -> dict:

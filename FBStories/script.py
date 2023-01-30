@@ -19,7 +19,7 @@ def get_html(url: str, cookies: dict) -> str:
         Devuelve un string que contiene el contenido html de la story.
     """
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=False)
+        browser = playwright.chromium.launch()
         context = browser.new_context(
             user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36')
         page = context.new_page()
