@@ -117,10 +117,6 @@ def read_json_file(path: str):
 
 
 def http_download(url, output_dir):
-    """
-    filename:
-        Si es None, se obtiene el filename se la respuesta http.
-    """
     r = session.get(url, headers=headers, stream=True)
     r.raise_for_status()
 
@@ -137,7 +133,7 @@ def http_download(url, output_dir):
                     count += len(chunk)
             
             if count == total_length:
-                break
+                return path
         except ChunkedEncodingError:
             r = session.get(url, headers=headers, stream=True)
             r.raise_for_status()

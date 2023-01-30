@@ -19,5 +19,6 @@ def run_script():
     cookies= load_cookies(cookies_path)
 
     metadata = run(url, cookies=cookies)
-    for dl_url in metadata["urls"]:
-        http_download(dl_url, output_dir)
+    for index, dl_url in enumerate(metadata["urls"],index=1):
+        r= http_download(dl_url, output_dir)
+        print(index, os.path.basename(r))
