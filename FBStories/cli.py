@@ -5,7 +5,7 @@ from . import run
 from .utils import load_cookies, http_download
 
 parser = argparse.ArgumentParser()
-parser.add_argument("url", nargs="+", type=str, help="URL de la Facebook Story")
+parser.add_argument("url", type=str, help="URL de la Facebook Story")
 parser.add_argument("--cookies", default="cookies.json", help="Ruta del archivo json que contiene las cookies")
 parser.add_argument("--output_dir", "-o", type=str, default=".", help="Directorio para guardar las salidas")
 
