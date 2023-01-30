@@ -1,6 +1,6 @@
 
 import json
-from typing import List, Union
+from typing import Union
 
 from lxml import html
 from playwright.sync_api import sync_playwright
@@ -85,5 +85,8 @@ def get_metadata(bucket_node: dict) -> dict:
 def run(url, cookies):
     html_content = get_html(url, cookies)
     json_data = get_script_element_in_json(html_content)
+    if json_data is None:
+        print("Parece que la historia ya no está disponible")
+        exit()
     bucket_node = get_node_bucket(json_data)
     return get_metadata(bucket_node)

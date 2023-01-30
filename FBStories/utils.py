@@ -31,11 +31,11 @@ def check_cookies_for_facebook(listDict: List[dict]) -> bool:
     """
     cookie_names_required = ["c_user", "datr",
                              "fr", "presence", "sb", "wd", "xs"]
-    for json_date in listDict:       
+    for json_date in listDict:
         if json_date["name"] in cookie_names_required:
             cookie_names_required.remove(json_date["name"])
-    
-    if len(cookie_names_required)>0:
+
+    if len(cookie_names_required) > 0:
         return False
     return True
 
@@ -72,23 +72,27 @@ def parse_listDict_cookies(listDict: List[dict]):
             "secure": json_data["secure"],
             "sameSite": get_value_of_sameSite(json_data)
         }
-        if get_value_of_expires(json_data): 
-            cookie["expires"]= get_value_of_expires(json_data)
+        if get_value_of_expires(json_data):
+            cookie["expires"] = get_value_of_expires(json_data)
 
         cookies.append(cookie)
     return cookies
 
 
 def load_cookies(cookies_path: str):
-    if os.path.exists(cookies_path):
-        data = read_json_file(cookies_path)
-        cookies = parse_listDict_cookies(data)
-        if check_cookies_for_facebook(cookies):
-            return cookies
-        raise Exception(
-            "Alguno o todos de los `name` de cookies no está presente en las cookies proporcionadas.")
-    print("No existe archivo que contiene las cookies")
-    exit()
+    if not os.path.exists(cookies_path):
+        print("Alguno o todos de los `name` de cookies no está presente en las cookies proporcionadas.")
+        exit()
+
+    data = read_json_file(cookies_path)
+    cookies = parse_listDict_cookies(data)
+    
+    if check_cookies_for_facebook(cookies) is False:
+        print("No se encontro el archivo que contiene las cookies")
+        exit()    
+    return cookies
+        
+    
 
 
 def parse_netscape_cookies(file) -> dict:
@@ -120,9 +124,9 @@ def http_download(url, output_dir):
     r = session.get(url, headers=headers, stream=True)
     r.raise_for_status()
 
-    filename= get_filename_url(url)
-    path= os.path.join(output_dir, filename)
- 
+    filename = get_filename_url(url)
+    path = os.path.join(output_dir, filename)
+
     total_length = int(r.headers.get("Content-Length"))
     count = 0
     while True:
@@ -131,7 +135,7 @@ def http_download(url, output_dir):
                 for chunk in r.iter_content(chunk_size=10000000):
                     fout.write(chunk)
                     count += len(chunk)
-            
+
             if count == total_length:
                 return path
         except ChunkedEncodingError:
@@ -139,19 +143,10 @@ def http_download(url, output_dir):
             r.raise_for_status()
             continue
 
-def get_filename_url(url) -> str:
-    """
-    A partir de una URL devuelve lo que se supone es el nombre del archivo introducido en la estructura de la URL.
-    Se ha provado en estas URL de tiktok:
-    - cover
-    - originCover
-    - dynamicCover
-    - playAddr
-    - downloadAddr
-    """
-    if isinstance(url, str):
-        path = urlparse(url).path
-        if path.endswith("/"):
-            path = path[:-2]
-        return path.split("/")[-1]
-    return ""
+
+def get_filename_url(url) -> str:    
+    path = urlparse(url).path
+    if path.endswith("/"):
+        path = path[:-2]
+    return path.split("/")[-1]
+

@@ -24,11 +24,13 @@ Una vez instala vaya a facebook.com y haga los siguiente pasos:
 # Uso de línea de comandos
 Como un ejemplo se uso 
 
-El siguiente comando descargara la siguiente story de Facebook
+El siguiente comando buscará el archivo `cookies.json` en la raiz del proyecto y descargará todos los medios que tenga la story de facebook:
+
 ```shell
 fbstories https://web.facebook.com/stories/1356992473975435
 ```
-Si el archivo `cookies.json` no está en la raiz del proyecto, debe especificar la ubicacion pasando el argumento `--cookies` asi:
+
+En caso que `cookies.json` no está en la raiz del proyecto, debe especificar la ubicacion pasando el argumento `--cookies`:
 ```shell
 fbstories https://web.facebook.com/stories/1460595473991895 --cookies "C:\Users\UserName\Downloads\cookies.json"
 ```
