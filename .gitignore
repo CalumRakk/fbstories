@@ -1,0 +1,7 @@
+__pycache__
+asssets/
+*.json
+.env/
+.venv/
+cookies.json
+test.py
