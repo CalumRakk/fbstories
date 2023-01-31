@@ -1,17 +1,18 @@
 
 Script para descargar Facebook stories 
 
-# Instación
+# Instalación
 El primer comando instalará la última version de este repositorio.
 
-El segundo instalará los navegadores playwright que se requieren para que este proyecto funcione.
+El segundo instalará los navegadores de playwright requeridos para que este proyecto funcione.
 
-```python
+```shell
 pip install git+https://github.com/CalumRakk/fbstories
 python -m playwright install
 ```
+
 # Cookies de Facebook
-Este proyecto requiere de cookies de facebook porque las URL de las stories son urls protegidas y requieren de autenticación para poder acceder.
+Este proyecto requiere de las cookies de facebook para que funcione porque las URL de facebook stories están protegidas y requieren de autenticación para poder acceder.
 
 Para conseguir las cookies de facebook se puede usar cualquier herramiente de su preferencia. Sin embargo, en este proyecto he usado la extension [EditThisCookie](https://chrome.google.com/webstore/detail/editthiscookie/fngmhnnpilhplaeedifhccceomclgfbg) 
 
@@ -21,7 +22,7 @@ Una vez instala vaya a facebook.com y haga los siguiente pasos:
 - clic en el boton de exportar para copiar las cookies
 - guardar las cookies en un archivo llamado `cookies.json`
 
-# Uso de línea de comandos
+# Usando la línea de comandos
 Como un ejemplo se uso 
 
 El siguiente comando buscará el archivo `cookies.json` en la raiz del proyecto y descargará todos los medios que tenga la story de facebook:
