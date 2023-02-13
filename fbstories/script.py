@@ -63,7 +63,9 @@ def get_node_bucket(data_json: dict) -> dict:
         La estructura del data_json es horrible, toca acceder a muchos campos para encontrar el campo que nos interesa ['unified_stories']['edges']
     """
     # TODO: averiguar que tiene este nodo `viewer.stories_lwr_animations`:
-    return data_json[0][-1][0]["__bbox"]["require"][5][3][1]["__bbox"]["result"]["data"]["bucket"]
+    # with open("data.json","w") as file:
+    #     json.dump(data_json, file)
+    return data_json[0][-1][0]["__bbox"]["require"][7][3][1]["__bbox"]["result"]["data"]["bucket"]
 
 
 def get_metadata(bucket_node: dict) -> dict:
@@ -86,7 +88,7 @@ def run(url, cookies):
     html_content = get_html(url, cookies)
     json_data = get_script_element_in_json(html_content)
     if json_data is None:
-        print("Parece que la historia ya no está disponible")
+        print("Cookies caducadas o parece que la historia ya no está disponible")
         exit()
     bucket_node = get_node_bucket(json_data)
     return get_metadata(bucket_node)
