@@ -65,7 +65,11 @@ def get_node_bucket(data_json: dict) -> dict:
     # TODO: averiguar que tiene este nodo `viewer.stories_lwr_animations`:
     # with open("data.json","w") as file:
     #     json.dump(data_json, file)
-    return data_json[0][-1][0]["__bbox"]["require"][7][3][1]["__bbox"]["result"]["data"]["bucket"]
+    try:
+        return data_json[0][-1][0]["__bbox"]["require"][7][3][1]["__bbox"]["result"]["data"]["bucket"]
+    except TypeError:
+        return data_json[0][-1][0]["__bbox"]["require"][5][3][1]["__bbox"]["result"]["data"]["bucket"]
+
 
 
 def get_metadata(bucket_node: dict) -> dict:

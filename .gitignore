@@ -6,3 +6,5 @@ asssets/
 cookies.json
 test.py
 fbstories.egg-info
+*.mp4
+*.jpg
