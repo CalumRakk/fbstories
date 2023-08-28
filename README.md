@@ -1,58 +1,63 @@
+Script para descargar Facebook stories
 
-Script para descargar Facebook stories 
+Instalación
+------------
 
-# Instalación
-El primer comando instalará la última version de este repositorio.
+Para comenzar, sigue los siguientes pasos de instalación:
 
-El segundo instalará los navegadores de playwright requeridos para que este proyecto funcione.
+1. instala la última version de este proyecto:
 
 ```shell
 pip install git+https://github.com/CalumRakk/fbstories
+```
+
+2. Instala los navegadores requeridos de Playwright ejecutando el siguiente comando:
+
+```shell
 python -m playwright install
 ```
 
-# Cookies de Facebook
-Este proyecto requiere de las cookies de facebook para que funcione porque las URL de facebook stories están protegidas y requieren de autenticación para poder acceder.
+Obtener las Cookies de Facebook
+------------
+Este proyecto requiere el uso de cookies, ya que las URLs de las historias de Facebook están protegidas y requieren autenticación para acceder a ellas.
 
-Para conseguir las cookies de facebook se puede usar cualquier herramiente de su preferencia. Sin embargo, en este proyecto he usado la extension [EditThisCookie](https://chrome.google.com/webstore/detail/editthiscookie/fngmhnnpilhplaeedifhccceomclgfbg) 
+Puedes usar la extensión de Chrome llamada [EditThisCookie](https://chrome.google.com/webstore/detail/editthiscookie/fngmhnnpilhplaeedifhccceomclgfbg) para obtener las cookies de manera sencilla. Una vez que hayas instalado la extensión, sigue estos pasos:
 
-Una vez instala vaya a facebook.com y haga los siguiente pasos:
+1. Dirígete a facebook.com.
+2. Haz clic en el icono de la extensión en la barra del navegador.
+3. Selecciona la opción de exportar para copiar las cookies.
+4. Guarda las cookies en un archivo llamado cookies.json.
 
-- Dale clic al icono de la extension
-- clic en el boton de exportar para copiar las cookies
-- guardar las cookies en un archivo llamado `cookies.json`
-
-# Usando la línea de comandos
-Como un ejemplo se uso 
-
-El siguiente comando buscará el archivo `cookies.json` en la raiz del proyecto y descargará todos los medios que tenga la story de facebook:
+Cómo descargar una historia usando la línea de comandos
+------------
+Puedes usar el siguiente comando para descargar todos los medios de una historia de Facebook:
 
 ```shell
 fbstories https://web.facebook.com/stories/1356992473975435
 ```
 
-En caso que `cookies.json` no está en la raiz del proyecto, debe especificar la ubicacion pasando el argumento `--cookies`:
+Asegúrate de que el archivo cookies.json se encuentra en la misma ubicación desde donde ejecutas el comando.
+
+Si el archivo cookies.json no se encuentra en la raíz del proyecto, debes especificar la ubicación utilizando el argumento --cookies de la siguiente manera:
+
 ```shell
 fbstories https://web.facebook.com/stories/1460595473991895 --cookies "C:\Users\UserName\Downloads\cookies.json"
 ```
 
-# Usando Python
+# Python modulo fbstories 
+Si prefieres usar el script desde Python, aquí tienes un ejemplo de cómo hacerlo:
+
 ```python
-import os
 from fbstories import run
-from fbstories.utils import load_cookies, http_download
 
 url = "https://web.facebook.com/stories/1356992473975435"
-output_dir = "."
 cookies_path = "cookies.json"
+output_dir = "Gallery"
 
-os.makedirs(output_dir, exist_ok=True)
-cookies = load_cookies(cookies_path)
+run(url=url, cookies_path=cookies_path, output_dir=output_dir)
 
-metadata = run(url, cookies=cookies)
-for url in metadata["urls"]:
-    http_download(url, output_dir)
 ```
+
 
 
 
