@@ -1,8 +1,10 @@
 import json
 from typing import Union
+from pathlib import Path
 
 from lxml import html
 from playwright.sync_api import sync_playwright
+from .utils import load_cookies, session, get_filename_from_url
 
 
 def get_html(url: str, cookies: dict) -> str:
@@ -26,7 +28,6 @@ def get_html(url: str, cookies: dict) -> str:
         context.add_cookies(cookies)
 
         page.goto(url)
-
         html_content = page.evaluate("() => document.documentElement.outerHTML")
         return html_content
 
@@ -46,14 +47,15 @@ def get_script_element_in_json(html_content: str) -> Union[str, None]:
     """
     root = html.fromstring(html_content)
     for node_script in root.findall(".//script[@type='application/json']"):
-        if "VideoPlayerShakaPerformanceLoggerConfig" in node_script.text:
+        # la palabra 'story_bucket_owner' aparece dos veces en el HTML de en el elemento script que nos interesa.
+        if "story_bucket_owner" in node_script.text:
             data = json.loads(node_script.text)
             if data.get("require"):
                 return data["require"]
     return None
 
 
-def get_node_bucket(data_json: dict) -> dict:
+def get_bucket_node(url, cookies_path) -> dict:
     """Devuelve el nodo `bucket` que contiene los nodos claves:
     - `unified_stories`: contiene nodos que tienen los enlaces de descarga de la story
     - `owner`(o `story_bucket_owner`): información del autor
@@ -62,39 +64,45 @@ def get_node_bucket(data_json: dict) -> dict:
         La estructura del data_json es horrible, toca acceder a muchos campos para encontrar el campo que nos interesa ['unified_stories']['edges']
     """
     # TODO: averiguar que tiene este nodo `viewer.stories_lwr_animations`:
-    # with open("data.json","w") as file:
-    #     json.dump(data_json, file)
+    cookies = load_cookies(cookies_path)
+    html_content = get_html(url, cookies)
+
+    json_data = get_script_element_in_json(html_content)
+
     try:
-        return data_json[0][-1][0]["__bbox"]["require"][7][3][1]["__bbox"]["result"][
+        return json_data[0][-1][0]["__bbox"]["require"][-1][-1][-1]["__bbox"]["result"][
+            "data"
+        ]["extendedViewerBucket"]
+    except KeyError:
+        return json_data[0][-1][0]["__bbox"]["require"][-1][-1][-1]["__bbox"]["result"][
             "data"
         ]["bucket"]
     except TypeError:
-        return data_json[0][-1][0]["__bbox"]["require"][5][3][1]["__bbox"]["result"][
+        return json_data[0][-1][0]["__bbox"]["require"][5][3][1]["__bbox"]["result"][
             "data"
         ]["bucket"]
 
 
-def get_metadata(bucket_node: dict) -> dict:
-    """Devuelve un dict que tiene un campo `urls` que contiene una lista de urls para descargar los medios y
-    otro campo `author` que contiene un diccionario con los metadatos del author de la story.
-    """
-    URLS = []
-    for node in bucket_node["unified_stories"]["edges"]:
-        media = node["node"]["attachments"][0]["media"]
+def run(url, cookies_path, output_dir):
+    bucket_node = get_bucket_node(url, cookies_path)
+    username = bucket_node["owner"]["name"]
+
+    folder = Path(output_dir).joinpath(username)
+    if bucket_node["__isNode"] == "StoryHighlightContainer":
+        name = bucket_node.get("name")
+        if name:
+            folder = folder.joinpath(name)
+    folder.mkdir(parents=True, exist_ok=True)
+
+    for edge in bucket_node["unified_stories"]["edges"]:
+        media = edge["node"]["attachments"][0]["media"]
+
         if media["__typename"] == "Photo":
-            URLS.append(media["image"]["uri"])
-            continue
-        URLS.append(media["playable_url_quality_hd"])
+            url = media["image"]["uri"]
+        else:
+            url = media["browser_native_hd_url"] or media["browser_native_sd_url"]
 
-    author = bucket_node["owner"]
-    return {"urls": URLS, "author": author}
-
-
-def run(url, cookies):
-    html_content = get_html(url, cookies)
-    json_data = get_script_element_in_json(html_content)
-    if json_data is None:
-        print("Cookies caducadas o parece que la historia ya no está disponible")
-        exit()
-    bucket_node = get_node_bucket(json_data)
-    return get_metadata(bucket_node)
+        response = session.get(url)
+        filename = get_filename_from_url(url)
+        path = folder.joinpath(filename)
+        path.write_bytes(response.content)
