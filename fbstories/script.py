@@ -4,7 +4,7 @@ from pathlib import Path
 
 from lxml import html
 from playwright.sync_api import sync_playwright
-from .utils import load_cookies, session, get_filename_from_url
+from .utils import load_cookies, session, get_filename_from_url, download_url
 
 
 def get_html(url: str, cookies: dict) -> str:
@@ -101,10 +101,9 @@ def run(url, cookies_path, output_dir):
 
         if media["__typename"] == "Photo":
             url = media["image"]["uri"]
+            download_url(url, folder)
         else:
             url = media["browser_native_hd_url"] or media["browser_native_sd_url"]
-
-        response = session.get(url)
-        filename = get_filename_from_url(url)
-        path = folder.joinpath(filename)
-        path.write_bytes(response.content)
+            thumbnail = media["preferred_thumbnail"]["image"]["uri"]
+            path = download_url(url, folder)
+            download_url(thumbnail, folder, path.stem)

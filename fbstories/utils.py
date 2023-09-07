@@ -96,3 +96,24 @@ def get_filename_from_url(url) -> str:
     if path.endswith("/"):
         path = path[:-2]
     return path.split("/")[-1]
+
+
+def download_url(url, folder: Path, name: str = None):
+    if name:
+        temp_filename = get_filename_from_url(url)
+        temp_path = Path(temp_filename)
+        suffix = temp_path.suffix
+        filename = name + suffix
+    else:
+        filename = get_filename_from_url(url)
+
+    path = folder.joinpath(filename)
+
+    if path.exists():
+        print("El archivo ya existe", path.name)
+        return None
+
+    response = session.get(url)
+    path.write_bytes(response.content)
+    print("Descargado", path.name)
+    return path
