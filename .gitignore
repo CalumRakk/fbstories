@@ -13,3 +13,5 @@ Gallery
 tests
 build/
 dist/
+*.txt
+*.ico

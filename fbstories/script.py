@@ -85,7 +85,9 @@ def get_bucket_node(url, cookies_path) -> dict:
 
 def run(url, cookies_path, output_dir):
     bucket_node = get_bucket_node(url, cookies_path)
-    username = bucket_node["owner"]["name"]
+    username = (
+        bucket_node["owner"].get("name") or bucket_node["story_bucket_owner"]["name"]
+    )
 
     folder = Path(output_dir).joinpath(username)
     if bucket_node["__isNode"] == "StoryHighlightContainer":
