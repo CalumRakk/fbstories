@@ -73,14 +73,30 @@ def get_bucket_node(url, cookies_path) -> dict:
         return json_data[0][-1][0]["__bbox"]["require"][-1][-1][-1]["__bbox"]["result"][
             "data"
         ]["extendedViewerBucket"]
-    except KeyError:
+    except:
+        pass
+
+    try:
         return json_data[0][-1][0]["__bbox"]["require"][-1][-1][-1]["__bbox"]["result"][
             "data"
         ]["bucket"]
-    except TypeError:
+    except:
+        pass
+    try:
         return json_data[0][-1][0]["__bbox"]["require"][5][3][1]["__bbox"]["result"][
             "data"
         ]["bucket"]
+    except:
+        pass
+    # json_data-1.json
+    try:
+        return json_data[0][3][0]["__bbox"]["require"][7][3][1]["__bbox"]["result"][
+            "data"
+        ]["bucket"]
+    except:
+        pass
+
+    raise Exception("Ninguna coincidencia.")
 
 
 def run(url, cookies_path, output_dir):
