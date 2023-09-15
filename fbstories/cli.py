@@ -1,6 +1,6 @@
 #
 import argparse
-from . import run
+from . import run, VERSION
 
 
 def run_script():
@@ -18,6 +18,7 @@ def run_script():
         default="Gallery",
         help="Directorio para guardar las salidas",
     )
+    parser.add_argument("--version", action="version", version=f"version: {VERSION}")
 
     args = parser.parse_args()
     run(url=args.url, cookies_path=args.cookies, output_dir=args.output_dir)

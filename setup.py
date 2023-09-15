@@ -1,9 +1,9 @@
 from setuptools import setup
-import pkg_resources
+from fbstories import VERSION
 
 setup(
     name="fbstories",
-    version="0.3.1",
+    version=VERSION,
     description="Script para descargar stories de facebook",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",

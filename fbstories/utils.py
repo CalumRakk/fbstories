@@ -4,6 +4,8 @@ from urllib.parse import urlparse
 from pathlib import Path
 import requests
 
+VERSION = "0.3.1"
+
 headers = {
     "sec-ch-ua-mobile": "?0",
     "sec-ch-ua-platform": '"Windows"',
