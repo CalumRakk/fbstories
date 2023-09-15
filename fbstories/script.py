@@ -28,6 +28,12 @@ def get_html(url: str, cookies: dict) -> str:
         context.add_cookies(cookies)
 
         page.goto(url)
+        # https://www.facebook.com/index.php?next=https://www.facebook.com/stories/ID
+        if "index.php?" in page.url:
+            print(
+                "Se redireccionó la página a index.php?. Es posible que las cookies hayan expirado."
+            )
+            exit()
         html_content = page.evaluate("() => document.documentElement.outerHTML")
         return html_content
 
