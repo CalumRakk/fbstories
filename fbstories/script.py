@@ -1,6 +1,7 @@
 import json
 from typing import Union
 from pathlib import Path
+from datetime import datetime
 
 from lxml import html
 from playwright.sync_api import sync_playwright
@@ -120,12 +121,16 @@ def run(url, cookies_path, output_dir):
 
     for edge in bucket_node["unified_stories"]["edges"]:
         media = edge["node"]["attachments"][0]["media"]
+        name = datetime.fromtimestamp(edge["node"]["creation_time"]).strftime(
+            "%Y-%m-%d_%H-%M-%S"
+        )
 
         if media["__typename"] == "Photo":
             url = media["image"]["uri"]
-            download_url(url, folder)
+            download_url(url, folder, name=name)
         else:
             url = media["browser_native_hd_url"] or media["browser_native_sd_url"]
             thumbnail = media["preferred_thumbnail"]["image"]["uri"]
-            path = download_url(url, folder)
-            download_url(thumbnail, folder, path.stem)
+
+            download_url(url, folder, name=name)
+            download_url(thumbnail, folder, name=name)
