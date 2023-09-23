@@ -35,6 +35,7 @@ def get_html(url: str, cookies: dict) -> str:
                 "Se redireccionó la página a index.php?. Es posible que las cookies hayan expirado."
             )
             exit()
+        page.query_selector("[class='x1iyjqo2 x1n2onr6'] span").click()
         html_content = page.evaluate("() => document.documentElement.outerHTML")
         return html_content
 
